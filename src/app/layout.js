@@ -2,8 +2,8 @@ import './globals.css'
 import Header from '../components/Header'
 
 export const metadata = {
-  title: 'My Website',
-  description: 'Welcome to my personal website!',
+  title: 'PVC Calculator',
+  description: 'Preservation Trust Company calculator.',
   icons: {
     icon: '/favicon.ico',
   },

@@ -24,7 +24,7 @@ export default function Header() {
             />
           </div>
         </Link>
-        <span>My Website</span>
+        <span>Preservation Trust Company Calculator</span>
       </div>
 
       <div className={styles.hamburger} onClick={toggleMenu}>
