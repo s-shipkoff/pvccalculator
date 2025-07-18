@@ -1,93 +1,38 @@
 'use client'
 import { useState } from 'react'
 import styles from './calculator.module.css'
+import { stateTaxData } from '../data/stateTaxData'
+import { getTaxAmount } from '../data/getTaxAmount'
 
 export default function Calculator() {
-  const options = [
-    { label: "Alabama", factor: 0.05 },
-    { label: "Alaska", factor: 0 },
-    { label: "Arizona", factor: 0.05 },
-    { label: "Arkansas", factor: 0.05 },
-    { label: "California", factor: 0.05 },
-    { label: "Colorado", factor: 0.05 },
-    { label: "Connecticut", factor: 0.05 },
-    { label: "Delaware", factor: 0.05 },
-    { label: "Florida", factor: 0 },
-    { label: "Georgia", factor: 0.05 },
-    { label: "Hawaii", factor: 0.05 },
-    { label: "Idaho", factor: 0.05 },
-    { label: "Illinois", factor: 0.05 },
-    { label: "Indiana", factor: 0.05 },
-    { label: "Iowa", factor: 0.05 },
-    { label: "Kansas", factor: 0.05 },
-    { label: "Kentucky", factor: 0.05 },
-    { label: "Louisiana", factor: 0.05 },
-    { label: "Maine", factor: 0.05 },
-    { label: "Maryland", factor: 0.05 },
-    { label: "Massachusetts", factor: 0.05 },
-    { label: "Michigan", factor: 0.05 },
-    { label: "Minnesota", factor: 0.05 },
-    { label: "Mississippi", factor: 0.05 },
-    { label: "Missouri", factor: 0.05 },
-    { label: "Montana", factor: 0.05 },
-    { label: "Nebraska", factor: 0.05 },
-    { label: "Nevada", factor: 0 },
-    { label: "New Hampshire", factor: 0 },
-    { label: "New Jersey", factor: 0.05 },
-    { label: "New Mexico", factor: 0.05 },
-    { label: "New York", factor: 0.05 },
-    { label: "North Carolina", factor: 0.05 },
-    { label: "North Dakota", factor: 0.05 },
-    { label: "Ohio", factor: 0.05 },
-    { label: "Oklahoma", factor: 0.05 },
-    { label: "Oregon", factor: 0.05 },
-    { label: "Pennsylvania", factor: 0.05 },
-    { label: "Rhode Island", factor: 0.05 },
-    { label: "South Carolina", factor: 0.05 },
-    { label: "South Dakota", factor: 0 },
-    { label: "Tennessee", factor: 0 },
-    { label: "Texas", factor: 0 },
-    { label: "Utah", factor: 0.05 },
-    { label: "Vermont", factor: 0.05 },
-    { label: "Virginia", factor: 0.05 },
-    { label: "Washington", factor: 0 },
-    { label: "West Virginia", factor: 0.05 },
-    { label: "Wisconsin", factor: 0.05 },
-    { label: "Wyoming", factor: 0 }
-  ]
+  const options = Object.keys(stateTaxData).map(label => ({ label }))
 
   const [selectedOption, setSelectedOption] = useState(null)
   const [inputValue, setInputValue] = useState('')
+  const [capitalGainsInput, setCapitalGainsInput] = useState('')
+  const [nyLocation, setNyLocation] = useState('Neither')
   const [yearsInput, setYearsInput] = useState('')
   const [interestInput, setInterestInput] = useState('')
+  const [shortTermGains, setShortTermGains] = useState('')
+  const [collectiblesGains, setCollectiblesGains] = useState('')
 
   const handleSelectChange = (e) => {
     const selected = options.find(opt => opt.label === e.target.value)
     setSelectedOption(selected)
+    setCapitalGainsInput('')
+    setNyLocation('Neither')
   }
 
-  const handleInputChange = (e) => {
-    setInputValue(e.target.value)
-  }
+  const handleInputChange = (e) => setInputValue(e.target.value)
+  const handleCapitalGainsChange = (e) => setCapitalGainsInput(e.target.value)
+  const handleYearsChange = (e) => setYearsInput(e.target.value)
+  const handleInterestChange = (e) => setInterestInput(e.target.value)
 
-  const handleYearsChange = (e) => {
-    setYearsInput(e.target.value)
-  }
-
-  const handleInterestChange = (e) => {
-    setInterestInput(e.target.value)
-  }
-
-  const sanitizeCurrencyInput = (value) => {
-    if (!value) return '';
-    return value.replace(/[\$,]/g, '')
-  }
-
+  const sanitizeCurrencyInput = (value) => value.replace(/[\$,]/g, '')
   const isValidNumber = (value) => {
     const num = parseFloat(sanitizeCurrencyInput(value))
     return !isNaN(num) && num >= 0
   }
-
   const isValidInteger = (value) => {
     const num = parseInt(sanitizeCurrencyInput(value))
     return !isNaN(num) && num >= 0
@@ -101,9 +46,19 @@ export default function Calculator() {
   });
 
   const sanitizedIncome = sanitizeCurrencyInput(inputValue)
-  const annualSavings = (selectedOption && isValidNumber(sanitizedIncome))
-    ? parseFloat(sanitizedIncome) * selectedOption.factor
+  const sanitizedCapitalGains = sanitizeCurrencyInput(capitalGainsInput)
+
+  const annualSavings = selectedOption && isValidNumber(sanitizedIncome)
+    ? getTaxAmount(
+        selectedOption.label,
+        parseFloat(sanitizedIncome),
+        selectedOption.label === 'Montana' && isValidNumber(sanitizedCapitalGains)
+          ? parseFloat(sanitizedCapitalGains)
+          : 0,
+        nyLocation
+      )
     : null
+
 
   let accumulatedTotal = null
   if (
@@ -123,16 +78,15 @@ export default function Calculator() {
     accumulatedTotal = currencyFormatter.format(total)
   }
 
-  // Custom message for 0 factor states
   const noTaxMessage = "Your state has no income tax"
 
   return (
     <div style={{ padding: '2rem' }}>
       <h1>Income Tax Calculator</h1>
 
-      <br></br>
+      <br />
       <p>If you live in a state with income tax, you could save by putting your money in a trust in a state without income tax. See the calculator below to find out how much you could save.</p>
-      <br></br>
+      <br />
 
       <label>Select your State:</label><br />
       <select value={selectedOption ? selectedOption.label : ''} onChange={handleSelectChange}>
@@ -142,26 +96,68 @@ export default function Calculator() {
         ))}
       </select>
 
-      <br /><br />
+      {selectedOption?.label === 'Massachusetts' && (
+        <>
+          <br /><br />
+          <label>Enter annual income (including long-term capital gains):</label><br />
+          <input type="text" value={inputValue} onChange={handleInputChange} />
+        </>
+      )}
 
-      <label>Enter annual income:</label><br />
-      <input type="text" value={inputValue} onChange={handleInputChange} />
+      {selectedOption?.label !== 'Massachusetts' && (
+        <>
+          <br /><br />
+          <label>Enter annual income:</label><br />
+          <input type="text" value={inputValue} onChange={handleInputChange} />
+        </>
+      )}
+
+      {selectedOption?.label === 'Massachusetts' && (
+        <>
+          <br /><br />
+          <label>Short-term capital gains:</label><br />
+          <input type="text" value={shortTermGains} onChange={(e) => setShortTermGains(e.target.value)} />
+
+          <br /><br />
+          <label>Long-term capital gains from collectibles:</label><br />
+          <input type="text" value={collectiblesGains} onChange={(e) => setCollectiblesGains(e.target.value)} />
+        </>
+      )}
+
+      {selectedOption?.label === 'Montana' && (
+        <>
+          <br /><br />
+          <label>Net long-term capital gains:</label><br />
+          <input type="text" value={capitalGainsInput} onChange={handleCapitalGainsChange} />
+        </>
+      )}
+
+      {selectedOption?.label === 'New York' && (
+        <>
+          <br /><br />
+          <label>Do you reside in New York City or Yonkers?</label><br />
+          <select value={nyLocation} onChange={(e) => setNyLocation(e.target.value)}>
+            <option value="Neither">Neither</option>
+            <option value="NYC">New York City</option>
+            <option value="Yonkers">Yonkers</option>
+          </select>
+        </>
+      )}
 
       <br /><br />
 
       <h2>
-        Amount unnecessarily paid in taxes annually: {
-          selectedOption === null || !isValidNumber(sanitizedIncome)
-            ? '--'
-            : selectedOption.factor === 0
-              ? noTaxMessage
-              : currencyFormatter.format(annualSavings)
-        }
+        Amount unnecessarily paid in taxes annually:{' '}
+        {selectedOption === null || !isValidNumber(sanitizedIncome)
+          ? '--'
+          : annualSavings === 0
+          ? noTaxMessage
+          : currencyFormatter.format(annualSavings)}
       </h2>
 
       <br />
       <p>Enter a duration and an interest rate to see what you could have after investing the savings over a long period of time.</p>
-      <br></br>
+      <br />
 
       <label>Number of years:</label><br />
       <input type="text" value={yearsInput} onChange={handleYearsChange} />
