@@ -1,7 +1,6 @@
 'use client';
 import React, { useState } from 'react';
 import styles from './distribution.module.css';
-import { states } from '../data/stateTaxData';
 
 export default function DistributionPage() {
   const [incomeTypes, setIncomeTypes] = useState([{ type: '', amount: '' }]);
