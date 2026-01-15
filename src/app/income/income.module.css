@@ -1,0 +1,139 @@
+/* ===== Page layout ===== */
+
+.pageContainer {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  font-family: system-ui, sans-serif;
+}
+
+/* ===== Header ===== */
+
+.headerSection {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.description {
+  font-size: 1rem;
+  color: #555;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* ===== Two-card layout ===== */
+
+.inputSection,
+.growthSection {
+  background: #ffffff;
+  border: 1px solid #e2e2e2;
+  border-radius: 10px;
+  padding: 2.5rem 1.75rem;
+
+  display: flex;
+  flex-direction: column;
+}
+
+/* Container behavior: two columns on desktop */
+@media (min-width: 900px) {
+  .pageContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "header header"
+      "left right";
+    column-gap: 2rem;
+  }
+
+  .headerSection {
+    grid-area: header;
+  }
+
+  .inputSection {
+    grid-area: left;
+  }
+
+  .growthSection {
+    grid-area: right;
+  }
+}
+
+/* Stack on mobile */
+@media (max-width: 899px) {
+  .inputSection {
+    margin-bottom: 2rem;
+  }
+}
+
+/* ===== Inputs ===== */
+
+.input,
+.select {
+  width: 100%;
+  padding: 0.55rem 0.6rem;
+  margin-top: 0.25rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.input:focus,
+.select:focus {
+  outline: none;
+  border-color: #4a6cf7;
+}
+
+/* ===== Sub-sections ===== */
+
+.stateSelector {
+  margin-bottom: 1.5rem;
+}
+
+.incomeInputs {
+  margin-bottom: 1.5rem;
+}
+
+.massachusettsInputs,
+.montanaInputs,
+.newYorkInputs {
+  margin-top: 1.25rem;
+}
+
+/* ===== Results ===== */
+
+.resultsSection {
+  margin-top: auto;
+  padding-top: 1.4rem;
+  border-top: 1px solid #e5e5e5;
+}
+
+.annualSavings {
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+/* ===== Growth card ===== */
+
+.growthDescription {
+  margin-bottom: 1.25rem;
+  color: #555;
+}
+
+.growthInputs {
+  margin-bottom: 8rem;
+}
+
+.totalSavings {
+  margin-top: auto;
+  border-top: 1px solid #e5e5e5;
+  padding-top: 1.4rem;
+  font-size: 1.4rem;
+  font-weight: 600;
+}

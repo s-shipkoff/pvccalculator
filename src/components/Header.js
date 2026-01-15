@@ -35,7 +35,8 @@ export default function Header() {
 
       <nav className={`${styles.nav} ${menuOpen ? styles.showMenu : ''}`}>
         <Link href="/">Home</Link>
-        <Link href="/calculator">Calculator</Link>
+        <Link href="/income">Income Tax Calculator</Link>
+        <Link href="/distribution">Distribution Calculator</Link>
         <a href="https://preservationtrustcompany.com/" target="_blank" rel="noopener noreferrer">
           Preservation Trust Company
         </a>

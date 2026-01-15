@@ -1,4 +1,18 @@
-.container {
+.center {
   padding: 2rem;
   text-align: center;
+}
+
+.h2 {
+  margin-bottom: 2rem;
+}
+
+.nav {
+  display: flex;
+  justify-content: center;
+}
+
+.nav a {
+  margin-left: 3rem;
+  margin-right: 3rem;
 }
