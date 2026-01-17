@@ -1,5 +1,5 @@
 .header {
-  background-color: #eee;
+  background-color: #f2f2f2ff;
   padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
@@ -40,7 +40,7 @@
   margin-left: 1.5rem;
   text-decoration: none;
   color: #333;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .nav a:hover {
